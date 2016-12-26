@@ -47,8 +47,6 @@ def dumpData(src, offset, index):
         print('Writing file %04d.bin...' % index)
         f.write(toWrite)
 
-    print('Done!')
-
 if len(sys.argv) == 2:
     with open(sys.argv[1], 'rb') as f:
         data = f.read()
@@ -70,3 +68,5 @@ k = 0
 for offset in offsets:
     dumpData(data, offset, k)
     k+=1
+
+print('Done!')
