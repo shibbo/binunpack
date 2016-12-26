@@ -58,7 +58,11 @@ else:
     sys.exit()
 
 # the rest is padding, we only need to read the first 4 bytes
-count, = struct.unpack_from('>I', data, 0)
+try:
+    count, = struct.unpack_from('>I', data, 0)
+except:
+    print('File is not a valid archive!')
+    sys.exit()
 
 parseBIN(count)
 
