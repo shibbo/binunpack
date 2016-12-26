@@ -2,6 +2,7 @@ import struct, sys, os
 
 offsets = []
 isLast = False
+isBRRES = False
 
 def parseBIN(count):
     # offset is always 0x10 so no need for calculations
@@ -32,6 +33,13 @@ def dumpData(src, offset, index):
         end = nextOffset
         bytesToRead = end - offset
 
+    brresTest, = struct.unpack_from('>4s', data, offset)
+
+    if (brresTest == b'bres'):
+        isBRRES = True
+    else:
+        isBRRES = False
+
     dataToWrite = struct.unpack_from('>%dB' % bytesToRead, data, offset)
 
     # now we determine the name of the folder we put the data in
@@ -42,10 +50,15 @@ def dumpData(src, offset, index):
         os.makedirs(folderName)
         
     toWrite = data[offset : offset + bytesToRead]
-    
-    with open(folderName + '/%04d.bin' % index, 'wb') as f:
-        print('Writing file %04d.bin...' % index)
-        f.write(toWrite)
+
+    if isBRRES:
+        with open(folderName + '/%04d.brres' % index, 'wb') as f:
+            print('Writing file %04d.brres...' % index)
+            f.write(toWrite)
+    else:
+        with open(folderName + '/%04d.bin' % index, 'wb') as f:
+            print('Writing file %04d.bin...' % index)
+            f.write(toWrite)        
 
 if len(sys.argv) == 2:
     with open(sys.argv[1], 'rb') as f:
